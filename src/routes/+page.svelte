@@ -1,2 +1,2 @@
-<p><em>Levyn Bürki</em></p>
-<p>Site under construction</p>
+<p><strong>le.vvvyyy.net</strong></p>
+<p>Website under construction</p>
