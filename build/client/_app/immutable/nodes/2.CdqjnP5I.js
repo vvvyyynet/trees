@@ -1,1 +1,0 @@
-import{a as t,t as r}from"../chunks/disclose-version.DIz2xj-h.js";import{p as e,a as m}from"../chunks/runtime.LGvzfdqq.js";import{i as n}from"../chunks/lifecycle.Bilc5_7O.js";var i=r("<p><em>Levyn Bürki</em></p> <p>Site under construction</p>",1);function u(p,a){e(a,!1),n();var o=i();t(p,o),m()}export{u as component};
