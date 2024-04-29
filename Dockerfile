@@ -28,13 +28,13 @@
 FROM node:20.2-alpine AS sk-build
 WORKDIR /usr/src/app
 
-# ARG TZ=Europe/Stockholm
-# ARG PUBLIC_HELLO
-# COPY . /usr/src/app
-# RUN apk --no-cache add curl tzdata
-# RUN cp /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+ARG TZ=Europe/Stockholm
+ARG PUBLIC_HELLO
+COPY . /usr/src/app
+RUN apk --no-cache add curl tzdata
+RUN cp /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 COPY build ./build
-RUN npm install --only=production
+RUN npm install --omit=dev
 EXPOSE 3000
 CMD ["node", "build/index.js"]
