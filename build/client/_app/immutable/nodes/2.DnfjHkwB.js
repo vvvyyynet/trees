@@ -1,0 +1,1 @@
+import{a,t as o}from"../chunks/disclose-version.DmngbV3w.js";import"../chunks/legacy._iPlEy4v.js";var r=o('<div class="flex h-screen w-screen flex-col items-center justify-center gap-5 bg-gray-900 text-white"><h1 class="text-2xl font-bold">vvvyyy.net</h1></div>');function c(e){var t=r();a(e,t)}export{c as component};
