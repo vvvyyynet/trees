@@ -37,7 +37,7 @@ COPY ./static ./static
 RUN apk --no-cache add curl tzdata
 
 # RUN npm install
-RUN npm install --omit=dev
+RUN npm install
 
 EXPOSE 3000
 CMD ["node", "build/index.js"]
