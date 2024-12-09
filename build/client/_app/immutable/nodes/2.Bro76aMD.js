@@ -1,1 +1,0 @@
-import{a,t as r}from"../chunks/disclose-version.DIz2xj-h.js";import{p as e,a as n}from"../chunks/runtime.LGvzfdqq.js";import{i as s}from"../chunks/lifecycle.Bilc5_7O.js";var i=r("<p><strong>le.vvvyyy.net</strong></p> <p>Website under construction</p>",1);function c(t,o){e(o,!1),s();var p=i();a(t,p),n()}export{c as component};
