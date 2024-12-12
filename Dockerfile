@@ -26,18 +26,23 @@
 
 # # PUSH PRE-BUILT APP
 # # ---------------------------------------
-FROM node:21.7.1-alpine AS sk-build
-WORKDIR /usr/src/app
-
-COPY . /usr/src/app
-COPY build ./build
-COPY ./static ./static
-
-# Can be commented out!
-RUN apk --no-cache add curl tzdata
-
-# RUN npm install
-RUN npm install
-
-EXPOSE 3000
-CMD ["node", "build/index.js"]
+  FROM node:20.10-alpine AS sk-build
+  WORKDIR /usr/src/app
+  
+  # Copy app files to the container
+  COPY . /usr/src/app
+  COPY build ./build
+  COPY ./static ./static
+  
+  # Install any required system packages (optional)
+  RUN apk --no-cache add curl tzdata
+  
+  # Install dependencies
+  RUN npm install
+  
+  # Expose the application port
+  EXPOSE 3000
+  
+  # Start the application
+  CMD ["node", "build/index.js"]
+  
