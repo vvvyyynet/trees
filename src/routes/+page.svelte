@@ -1,4 +1,4 @@
-<div class="w-60% m-20 min-w-[500px] max-w-[1200px]">
+<div class="mt-5 w-full px-4 md:mt-10 md:max-w-[1200px] md:px-20">
 	<p>
 		Trees are of central importance to urban life, providing vital services for the urban climate,
 		human health, and biodiversity. In light of the climate crisis, urban planning needs to take

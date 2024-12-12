@@ -8,14 +8,14 @@
 </script>
 
 <div
-	class="absolute h-screen w-screen overflow-hidden {isRoot
+	class="absolute h-screen w-screen overflow-hidden text-sm md:text-xl {isRoot
 		? 'bg-[#212822] text-white'
 		: 'bg-white text-black'}"
 >
-	<div class="absolute top-0 flex h-[50px] w-screen flex-row gap-4 px-4 py-2">
+	<div class="absolute top-0 flex h-[50px] w-screen flex-row gap-2 px-4 py-2 md:gap-8">
 		<button
 			type="button"
-			class="mr-[40px] text-xl hover:text-green-300"
+			class="mr-[10px] hover:text-green-300 md:mr-[40px]"
 			onclick={() => {
 				goto('.');
 			}}
@@ -23,14 +23,14 @@
 			Visualising Urban Tree Ecosystems
 		</button>
 		<button
-			class=" text-xl hover:text-green-300"
+			class=" hover:text-green-300"
 			type="button"
 			onclick={() => {
 				goto('/requirements');
 			}}>Requirements</button
 		>
 		<button
-			class="text-xl hover:text-green-300"
+			class="hover:text-green-300"
 			type="button"
 			onclick={() => {
 				goto('/info');

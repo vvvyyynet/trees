@@ -5,6 +5,7 @@
 	let markdownFiles = $state([]);
 	let selectedTags = $state([]);
 	let textQuery = $state('');
+	let isVisibleFilters = $state(false);
 
 	// --------------------------------------------
 	// Tag coloring
@@ -122,64 +123,80 @@
 			: [...selectedTags, tag];
 	}
 
+	function toggleFilters() {
+		isVisibleFilters = !isVisibleFilters;
+	}
 	onMount(loadMarkdownFiles);
 </script>
 
-<div class="grid h-full w-full grid-rows-[minmax(30%,200px)_auto]">
-	<!-- Tag Filter Menus -->
-	<div class="mb-[50px] flex min-h-[200px] flex-col gap-4 px-5">
+<div
+	class="grid h-full w-full {isVisibleFilters
+		? 'grid-rows-[minmax(50%,300px)_auto] md:grid-rows-[minmax(40%,200px)_auto]'
+		: 'grid-rows-[minmax(10%,20px)_auto]'}"
+>
+	<div class="mb-[50px] flex min-h-[200px] flex-col gap-4 px-2 md:px-5">
+		<!-- Tag Filter Menus -->
+		<button
+			type="button"
+			class="md:text-md w-[150px] rounded-full border-2 border-black text-center {isVisibleFilters
+				? 'bg-black text-white'
+				: 'bg-white text-black'} px-3 py-1 text-xs"
+			onclick={toggleFilters}>{isVisibleFilters ? 'hide filters' : 'show filters'}</button
+		>
 		<!-- Category Tags -->
-		<div>
-			<h2 class="mb-2 text-xs">filter by category</h2>
-			<div class="flex flex-wrap gap-2">
-				{#each Array.from(new Set(markdownFiles.flatMap((file) => file.tagsCat))) as tag}
-					<button
-						onclick={() => toggleTag(tag)}
-						class="rounded-full border-2 px-3 py-1 text-xs uppercase"
-						style={`border-color: ${getTagColor(tag)}; background-color: ${
-							selectedTags.includes(tag) ? getTagColor(tag) : 'white'
-						}`}
-					>
-						{tag}
-					</button>
-				{/each}
+		{#if isVisibleFilters}
+			<div>
+				<h2 class="mb-2 text-xs">filter by category</h2>
+				<div class="flex flex-wrap gap-2">
+					{#each Array.from(new Set(markdownFiles.flatMap((file) => file.tagsCat))) as tag}
+						<button
+							onclick={() => toggleTag(tag)}
+							class="rounded-full border-2 px-3 py-1 text-xs uppercase"
+							style={`border-color: ${getTagColor(tag)}; background-color: ${
+								selectedTags.includes(tag) ? getTagColor(tag) : 'white'
+							}`}
+						>
+							{tag}
+						</button>
+					{/each}
+				</div>
 			</div>
-		</div>
 
-		<!-- Priority Tags -->
-		<div>
-			<h2 class="mb-2 text-xs">filter by priority</h2>
-			<div class="flex flex-wrap gap-2">
-				{#each Array.from(new Set(markdownFiles.flatMap((file) => file.tagsPrio))) as tag}
-					<button
-						onclick={() => toggleTag(tag)}
-						class="border-2 px-2 py-1 text-xs"
-						style={`border-color: ${getPrioColor(tag)}; background-color: ${
-							selectedTags.includes(tag) ? getPrioColor(tag) : 'white'
-						}`}
-					>
-						{tag}
-					</button>
-				{/each}
+			<!-- Priority Tags -->
+			<div>
+				<h2 class="mb-2 text-xs">filter by priority</h2>
+				<div class="flex flex-wrap gap-2">
+					{#each Array.from(new Set(markdownFiles.flatMap((file) => file.tagsPrio))) as tag}
+						<button
+							onclick={() => toggleTag(tag)}
+							class="border-2 px-2 py-1 text-xs"
+							style={`border-color: ${getPrioColor(tag)}; background-color: ${
+								selectedTags.includes(tag) ? getPrioColor(tag) : 'white'
+							}`}
+						>
+							{tag}
+						</button>
+					{/each}
+				</div>
 			</div>
-		</div>
 
-		<!-- Text Query Filter -->
-		<div class="mb-4">
-			<h2 class="mb-2 text-xs">filter by text</h2>
-			<input
-				type="text"
-				class="w-[200px] rounded-full border border-black px-4 py-2 text-xs"
-				placeholder="Search text..."
-				oninput={(e) => {
-					textQuery = e.target.value;
-				}}
-			/>
-		</div>
+			<!-- Text Query Filter -->
+			<div class="mb-4">
+				<h2 class="mb-2 text-xs">filter by text</h2>
+				<input
+					type="text"
+					class="w-[200px] rounded-full border border-black px-4 py-2 text-xs"
+					placeholder="Search text..."
+					oninput={(e) => {
+						textQuery = e.target.value;
+					}}
+				/>
+			</div>
+		{/if}
 	</div>
 
 	<!-- Markdown Table -->
-	<div class="overflow-scroll px-5 pb-[200px]">
+	<div class="overflow-scroll px-2 pb-[200px] md:px-5">
 		<table>
 			<!-- Head of the table -->
 			<thead>
@@ -202,7 +219,7 @@
 						<!-- First column (feature) -->
 						<td class="w-[200px]">
 							<!-- Title -->
-							<div class="mb-4 text-xl">{file.title}</div>
+							<div class="mb-4 text-lg md:text-xl">{file.title}</div>
 							<!-- Tags -->
 							<div class="mt-2 flex flex-col gap-2 pl-4">
 								<!-- Categories -->
