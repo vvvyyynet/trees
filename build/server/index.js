@@ -1,4 +1,4 @@
-import { r as render, g as get, L as LEGACY_PROPS, f as flush_sync, d as define_property, a as active_reaction, i as is_runes, D as DERIVED, B as BLOCK_EFFECT, b as derived_sources, s as state_unsafe_mutation, c as increment_version, e as DIRTY, h as set_signal_status, C as CLEAN, U as UNOWNED, j as schedule_effect, k as init_operations, l as get_first_child, H as HYDRATION_START, m as get_next_sibling, n as HYDRATION_ERROR, o as HYDRATION_END, p as hydration_failed, q as clear_text_content, t as array_from, u as effect_root, v as push, w as setContext, x as pop, y as active_effect, z as BRANCH_EFFECT, A as new_deps, E as untracked_writes, F as set_untracked_writes, M as MAYBE_DIRTY, G as set_active_reaction, I as set_active_effect, J as is_array, K as create_text, N as branch, O as push$1, P as pop$1, Q as component_context, R as BROWSER, S as noop } from './chunks/index-D_gy50fE.js';
+import { r as render, g as get, L as LEGACY_PROPS, f as flush_sync, d as define_property, a as active_reaction, i as is_runes, D as DERIVED, B as BLOCK_EFFECT, b as derived_sources, s as state_unsafe_mutation, c as increment_version, e as DIRTY, h as set_signal_status, C as CLEAN, U as UNOWNED, j as schedule_effect, k as init_operations, l as get_first_child, H as HYDRATION_START, m as get_next_sibling, n as HYDRATION_ERROR, o as HYDRATION_END, p as hydration_failed, q as clear_text_content, t as array_from, u as effect_root, v as push, w as setContext, x as pop, y as active_effect, z as BRANCH_EFFECT, A as new_deps, E as untracked_writes, F as set_untracked_writes, M as MAYBE_DIRTY, G as set_active_reaction, I as set_active_effect, J as is_array, K as create_text, N as branch, O as push$1, P as pop$1, Q as component_context, R as BROWSER, S as noop } from './chunks/index-DT4dZ9zQ.js';
 import { d as decode_pathname, h as has_data_suffix, s as strip_data_suffix, a as decode_params, n as normalize_path, b as disable_search, c as add_data_suffix, m as make_trackable, r as resolve } from './chunks/exports-CTha0ECg.js';
 
 let base = "";
@@ -616,10 +616,21 @@ const options = {
 		<div class="error">
 			<span class="status">` + status + '</span>\n			<div class="message">\n				<h1>' + message + "</h1>\n			</div>\n		</div>\n	</body>\n</html>\n"
   },
-  version_hash: "11wnw7p"
+  version_hash: "8ggrxx"
 };
 async function get_hooks() {
-  return {};
+  let handle;
+  let handleFetch;
+  let handleError;
+  let init;
+  let reroute;
+  return {
+    handle,
+    handleFetch,
+    handleError,
+    reroute,
+    init
+  };
 }
 
 /** @type {Record<string, string>} */
@@ -4797,6 +4808,7 @@ function filter_public_env(env, { public_prefix, private_prefix }) {
     )
   );
 }
+let init_promise;
 class Server {
   /** @type {import('types').SSROptions} */
   #options;
@@ -4827,7 +4839,7 @@ class Server {
     if (read) {
       set_read_implementation(read);
     }
-    if (!this.#options.hooks) {
+    await (init_promise ??= (async () => {
       try {
         const module = await get_hooks();
         this.#options.hooks = {
@@ -4837,12 +4849,15 @@ class Server {
           reroute: module.reroute || (() => {
           })
         };
+        if (module.init) {
+          await module.init();
+        }
       } catch (error) {
         {
           throw error;
         }
       }
-    }
+    })());
   }
   /**
    * @param {Request} request
