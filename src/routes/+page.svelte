@@ -101,7 +101,7 @@
 			<div class="flex flex-wrap gap-2">
 				{#each Array.from(new Set($markdownFiles.flatMap((file) => file.tagsCategory1))) as tag}
 					<button
-						on:click={() => toggleTag(tag)}
+						onclick={() => toggleTag(tag)}
 						class="rounded-lg px-3 py-1 text-white {getTagColor(tag)} {$selectedTags.includes(tag)
 							? 'ring-2 ring-offset-2'
 							: ''}"
@@ -118,7 +118,7 @@
 			<div class="flex flex-wrap gap-2">
 				{#each Array.from(new Set($markdownFiles.flatMap((file) => file.tagsCategory2))) as tag}
 					<button
-						on:click={() => toggleTag(tag)}
+						onclick={() => toggleTag(tag)}
 						class="rounded-lg px-3 py-1 text-white {getTagColor(tag)} {$selectedTags.includes(tag)
 							? 'ring-2 ring-offset-2'
 							: ''}"
