@@ -12,7 +12,12 @@
 	let useSomeChips = $state(false);
 	let isCaseSensitive = $state(false);
 	let textChips = $state([]);
-	$inspect(textChips);
+	let textChipTyping = $state('');
+
+	let updatedChipList = $derived(
+		[textChipTyping.length > 0 ? textChipTyping : null, ...textChips].filter(Boolean)
+	);
+	$inspect(updatedChipList);
 
 	// --------------------------------------------
 	// Tag coloring
@@ -114,18 +119,18 @@
 		}
 
 		// Filter by Text-Chips
-		if (textChips.length > 0) {
+		if (updatedChipList.length) {
 			files = files.filter((file) => {
 				const fullTextContent = file.H2blocks.flatMap((block) => block.content).join('|');
 				const fullText = [fullTextContent, file.title].join('|');
 				if (useSomeChips) {
 					return isCaseSensitive
-						? textChips.some((chip) => fullText.includes(chip))
-						: textChips.some((chip) => fullText.toLowerCase().includes(chip.toLowerCase()));
+						? updatedChipList.some((chip) => fullText.includes(chip))
+						: updatedChipList.some((chip) => fullText.toLowerCase().includes(chip.toLowerCase()));
 				} else {
 					return isCaseSensitive
-						? textChips.every((chip) => fullText.includes(chip))
-						: textChips.every((chip) => fullText.toLowerCase().includes(chip.toLowerCase()));
+						? updatedChipList.every((chip) => fullText.includes(chip))
+						: updatedChipList.every((chip) => fullText.toLowerCase().includes(chip.toLowerCase()));
 				}
 			});
 		}
@@ -133,6 +138,7 @@
 	});
 
 	function highlightText(content, terms) {
+		console.log('terms:', terms);
 		function escapeRegex(string) {
 			// Escapes regex special characters
 			// -> ensures that any special characters in the query terms (like . or *) are treated as literal characters.
@@ -257,9 +263,14 @@
 				</div> -->
 
 				<!-- Textfield with Chips -->
-				<div class="grid w-full grid-cols-[1fr_auto] rounded-full border border-black px-4 py-0">
+				<div
+					class="grid grid-cols-[1fr_auto] rounded-full border border-black px-4 py-0 transition-all {updatedChipList.length
+						? 'w-full'
+						: 'w-[400px]'}"
+				>
 					<InputChip
 						bind:value={textChips}
+						bind:input={textChipTyping}
 						class="m-0 cursor-default p-0 text-xs focus:border-black focus:outline-none"
 						regionChipWrapper="md:flex md:flex-row-reverse md:gap-5 px-0 md:space-y-0"
 						regionChipList="md:flex md:flex-row md:flex-nowrap px-0 mx-0"
@@ -325,7 +336,7 @@
 						<td class="w-[200px]">
 							<!-- Title -->
 							<div class="mb-4 text-lg md:text-xl">
-								{@html marked(highlightText(file.title, textChips))}
+								{@html marked(highlightText(file.title, updatedChipList))}
 							</div>
 							<!-- Tags -->
 							<div class="mt-2 flex flex-col gap-2 pl-4">
@@ -354,7 +365,7 @@
 						{#each file.H2blocks as H2block}
 							<td class="w-[200px]">
 								<p class="prose text-sm">
-									{@html marked(highlightText(H2block.content, textChips))}
+									{@html marked(highlightText(H2block.content, updatedChipList))}
 								</p>
 							</td>
 						{/each}
