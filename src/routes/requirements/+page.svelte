@@ -266,7 +266,7 @@
 				<div
 					class="grid grid-cols-[1fr_auto] rounded-full border border-black px-4 py-0 transition-all {updatedChipList.length
 						? 'w-full'
-						: 'w-[400px]'}"
+						: 'md:w-[400px]'}"
 				>
 					<InputChip
 						bind:value={textChips}
