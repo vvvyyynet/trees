@@ -165,9 +165,9 @@
 </script>
 
 <div
-	class="grid h-full w-full {isVisibleFilters
-		? 'grid-rows-[minmax(50%,300px)_auto] md:grid-rows-[minmax(45%,200px)_auto]'
-		: 'grid-rows-[minmax(10%,20px)_auto]'} transition-all"
+	class="grid h-full w-full transition-all {isVisibleFilters
+		? 'grid-rows-[minmax(65%,300px)_auto] md:grid-rows-[minmax(45%,200px)_auto]'
+		: 'grid-rows-[minmax(10%,20px)_auto]'}"
 >
 	<div class="mb-[50px] flex min-h-[200px] flex-col gap-4 px-2 md:px-5">
 		<!-- Tag Filter Menus -->
