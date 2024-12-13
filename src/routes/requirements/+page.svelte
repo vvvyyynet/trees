@@ -2,13 +2,14 @@
 	import { onMount } from 'svelte';
 	import { marked } from 'marked';
 	import { ChevronDown, ChevronUp } from 'lucide-svelte';
-	import { SlideToggle } from '@skeletonlabs/skeleton';
+	import { SlideToggle, InputChip } from '@skeletonlabs/skeleton';
 
 	let markdownFiles = $state([]);
 	let selectedTags = $state([]);
 	let textQuery = $state('');
-	let isVisibleFilters = $state(false);
+	let isVisibleFilters = $state(true);
 	let useSome = $state(false);
+	let isCaseSensitive = $state(false);
 
 	// --------------------------------------------
 	// Tag coloring
@@ -111,19 +112,23 @@
 
 		// Filter by Text
 		if (textQuery.trim()) {
-			const query = textQuery.trim().toLowerCase();
+			const query = textQuery.trim();
 			files = files.filter((file) =>
-				file.headings.some((heading) => heading.content.toLowerCase().includes(query))
+				file.headings.some(
+					(heading) =>
+						isCaseSensitive
+							? heading.content.includes(query) // Case-sensitive
+							: heading.content.toLowerCase().includes(query.toLowerCase()) // Case-insensitive
+				)
 			);
 		}
 		return files;
 	});
 
-	// ------------------------------------------------------
-	// Highlight text function
 	function highlightText(content, query) {
 		if (!query) return content;
-		const regex = new RegExp(`(${query})`, 'gi');
+		const flags = isCaseSensitive ? 'g' : 'gi';
+		const regex = new RegExp(`(${query})`, flags);
 		return content.replace(regex, '<mark>$1</mark>');
 	}
 
@@ -187,7 +192,7 @@
 						size="sm"
 						background="bg-red-400 dark:bg-red-700"
 					>
-						{useSome ? 'some' : 'every'}
+						{useSome ? 'some tags' : 'every tag'}
 					</SlideToggle>
 				</div>
 			</div>
@@ -213,14 +218,29 @@
 			<!-- Text Query Filter -->
 			<div class="mb-4">
 				<h2 class="mb-2 text-xs">filter by text</h2>
-				<input
-					type="text"
-					class="w-[200px] rounded-full border border-black px-4 py-2 text-xs"
-					placeholder="Search text..."
-					oninput={(e) => {
-						textQuery = e.target.value;
-					}}
-				/>
+
+				<div
+					class="input-group grid w-[200px] grid-cols-[1fr_auto] rounded-full border border-black py-2 pl-4"
+				>
+					<input
+						type="text"
+						class="w-full text-xs focus:border-black focus:outline-none"
+						placeholder="Search text..."
+						oninput={(e) => {
+							textQuery = e.target.value;
+						}}
+					/>
+
+					<button
+						onclick={() => {
+							isCaseSensitive = !isCaseSensitive;
+						}}
+						class="rounded-full py-1 text-sm
+					{isCaseSensitive ? 'font-bold text-green-400 dark:text-green-600' : 'text-black'}"
+					>
+						Aa
+					</button>
+				</div>
 			</div>
 		{/if}
 	</div>
