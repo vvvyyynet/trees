@@ -8,8 +8,11 @@
 	let selectedTags = $state([]);
 	let textQuery = $state('');
 	let isVisibleFilters = $state(true);
-	let useSome = $state(false);
+	let useSomeTags = $state(false);
+	let useSomeChips = $state(false);
 	let isCaseSensitive = $state(false);
+	let textChips = $state([]);
+	$inspect(textChips);
 
 	// --------------------------------------------
 	// Tag coloring
@@ -33,13 +36,13 @@
 
 		for (const [path, resolver] of Object.entries(files)) {
 			const content = await resolver();
-			const { tagsCat, tagsPrio, headings, title } = parseMarkdown(content);
+			const { tagsCat, tagsPrio, H2blocks, title } = parseMarkdown(content);
 			markdownFiles.push({
 				name: path.split('/').pop(), // Extract the filename
 				title,
 				tagsCat,
 				tagsPrio,
-				headings
+				H2blocks
 			});
 		}
 	}
@@ -63,7 +66,7 @@
 		const title = H1Regex.exec(content)[1];
 
 		// Extract Content of H2 Headings
-		const headings = [];
+		const H2blocks = [];
 		const H2Regex = /^##\s+(.*?)$/gm;
 		// as explained above
 		// g-flag means "global", so the regular expression will search through the entire content string, not just stopping after the first match.
@@ -72,20 +75,20 @@
 		// matchH2[1] contains the actual text of the heading, as captured by the (.*?) group.
 
 		while ((matchH2 = H2Regex.exec(content)) !== null) {
-			const heading = matchH2[1];
+			const H2block = matchH2[1];
 			// get subsequent content
 			const startIndex = matchH2.index + matchH2[0].length;
 			const nextHeadingIndex = content.slice(startIndex).search(/^##\s+/m);
 			const headingContent =
 				nextHeadingIndex === -1
-					? // last the end for last entry (nextHeadingIndex===-1 means, no more heading found)
+					? // last the end for last entry (nextHeadingIndex===-1 means, no more H2 found)
 						content.slice(startIndex).trim()
 					: // cut in the middle
 						content.slice(startIndex, startIndex + nextHeadingIndex).trim();
-			headings.push({ heading, content: headingContent });
+			H2blocks.push({ H2block, content: headingContent });
 		}
 
-		return { tagsCat, tagsPrio, headings, title };
+		return { tagsCat, tagsPrio, H2blocks, title };
 	}
 
 	// ------------------------------------------------------
@@ -98,7 +101,7 @@
 			files = markdownFiles;
 		} else {
 			files = markdownFiles.filter((file) => {
-				if (useSome) {
+				if (useSomeTags) {
 					return selectedTags.some(
 						(tag) => file.tagsCat.includes(tag) || file.tagsPrio.includes(tag)
 					);
@@ -110,25 +113,35 @@
 			});
 		}
 
-		// Filter by Text
-		if (textQuery.trim()) {
-			const query = textQuery.trim();
-			files = files.filter((file) =>
-				file.headings.some(
-					(heading) =>
-						isCaseSensitive
-							? heading.content.includes(query) // Case-sensitive
-							: heading.content.toLowerCase().includes(query.toLowerCase()) // Case-insensitive
-				)
-			);
+		// Filter by Text-Chips
+		if (textChips.length > 0) {
+			files = files.filter((file) => {
+				const fullTextContent = file.H2blocks.flatMap((block) => block.content).join('|');
+				const fullText = [fullTextContent, file.title].join('|');
+				if (useSomeChips) {
+					return isCaseSensitive
+						? textChips.some((chip) => fullText.includes(chip))
+						: textChips.some((chip) => fullText.toLowerCase().includes(chip.toLowerCase()));
+				} else {
+					return isCaseSensitive
+						? textChips.every((chip) => fullText.includes(chip))
+						: textChips.every((chip) => fullText.toLowerCase().includes(chip.toLowerCase()));
+				}
+			});
 		}
 		return files;
 	});
 
-	function highlightText(content, query) {
-		if (!query) return content;
+	function highlightText(content, terms) {
+		function escapeRegex(string) {
+			// Escapes regex special characters
+			// -> ensures that any special characters in the query terms (like . or *) are treated as literal characters.
+			return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+		}
+		if (!terms) return content;
 		const flags = isCaseSensitive ? 'g' : 'gi';
-		const regex = new RegExp(`(${query})`, flags);
+		const queryPattern = terms.map((term) => escapeRegex(term)).join('|');
+		const regex = new RegExp(`(${queryPattern})`, flags);
 		return content.replace(regex, '<mark>$1</mark>');
 	}
 
@@ -147,8 +160,8 @@
 
 <div
 	class="grid h-full w-full {isVisibleFilters
-		? 'grid-rows-[minmax(50%,300px)_auto] md:grid-rows-[minmax(40%,200px)_auto]'
-		: 'grid-rows-[minmax(10%,20px)_auto]'}"
+		? 'grid-rows-[minmax(50%,300px)_auto] md:grid-rows-[minmax(45%,200px)_auto]'
+		: 'grid-rows-[minmax(10%,20px)_auto]'} transition-all"
 >
 	<div class="mb-[50px] flex min-h-[200px] flex-col gap-4 px-2 md:px-5">
 		<!-- Tag Filter Menus -->
@@ -187,12 +200,12 @@
 						</button>
 					{/each}
 					<SlideToggle
-						bind:checked={useSome}
+						bind:checked={useSomeTags}
 						class="ml-5 text-sm"
 						size="sm"
 						background="bg-red-400 dark:bg-red-700"
 					>
-						{useSome ? 'some tags' : 'every tag'}
+						{useSomeTags ? 'filter some' : 'filter all'}
 					</SlideToggle>
 				</div>
 			</div>
@@ -219,7 +232,8 @@
 			<div class="mb-4">
 				<h2 class="mb-2 text-xs">filter by text</h2>
 
-				<div
+				<!-- Simple Textfield -->
+				<!-- <div
 					class="input-group grid w-[200px] grid-cols-[1fr_auto] rounded-full border border-black py-2 pl-4"
 				>
 					<input
@@ -235,11 +249,52 @@
 						onclick={() => {
 							isCaseSensitive = !isCaseSensitive;
 						}}
-						class="rounded-full py-1 text-sm
+						class="rounded-full py-1 text-sm focus:underline focus:outline-none
 					{isCaseSensitive ? 'font-bold text-green-400 dark:text-green-600' : 'text-black'}"
 					>
 						Aa
 					</button>
+				</div> -->
+
+				<!-- Textfield with Chips -->
+				<div class="grid w-full grid-cols-[1fr_auto] rounded-full border border-black px-4 py-0">
+					<InputChip
+						bind:value={textChips}
+						class="m-0 cursor-default p-0 text-xs focus:border-black focus:outline-none"
+						regionChipWrapper="md:flex md:flex-row-reverse md:gap-5 px-0 md:space-y-0"
+						regionChipList="md:flex md:flex-row md:flex-nowrap px-0 mx-0"
+						regionInput="px-0 mx-0 min-w-[200px]"
+						name="chips"
+						placeholder="Enter any value..."
+					/>
+					<div class="flex gap-5">
+						<button
+							onclick={() => {
+								isCaseSensitive = !isCaseSensitive;
+							}}
+							class="rounded-full py-1 text-sm focus:underline focus:outline-none
+					{isCaseSensitive ? 'font-bold text-green-400 dark:text-green-600' : 'text-black'}"
+						>
+							Aa
+						</button>
+						<button
+							onclick={() => {
+								useSomeChips = !useSomeChips;
+							}}
+							class="rounded-full py-1 text-sm focus:underline focus:outline-none
+						"
+						>
+							{useSomeChips ? 'filter some' : 'filter all'}
+						</button>
+						<!-- <SlideToggle
+							bind:checked={useSomeChips}
+							class="text-sm"
+							label="flex flex-row-reverse"
+							background="bg-red-400 dark:bg-red-700"
+						>
+							<span>{useSomeChips ? 'filter some' : 'filter all'}</span>
+						</SlideToggle> -->
+					</div>
 				</div>
 			</div>
 		{/if}
@@ -253,10 +308,10 @@
 				<tr>
 					<th class="min-w-[200px]">Feature</th>
 
-					<!-- For all remaining headings use the headings in the first file, assuming they are all the same -->
+					<!-- For all remaining H2blocks use the H2blocks in the first file, assuming they are all the same -->
 					{#if filteredFiles.length > 0}
-						{#each filteredFiles[0].headings as heading}
-							<th>{heading.heading}</th>
+						{#each filteredFiles[0].H2blocks as H2block}
+							<th>{H2block.H2block}</th>
 						{/each}
 					{/if}
 				</tr>
@@ -269,7 +324,9 @@
 						<!-- First column (feature) -->
 						<td class="w-[200px]">
 							<!-- Title -->
-							<div class="mb-4 text-lg md:text-xl">{file.title}</div>
+							<div class="mb-4 text-lg md:text-xl">
+								{@html marked(highlightText(file.title, textChips))}
+							</div>
 							<!-- Tags -->
 							<div class="mt-2 flex flex-col gap-2 pl-4">
 								<!-- Categories -->
@@ -294,10 +351,10 @@
 						>
 
 						<!-- All other columns -->
-						{#each file.headings as heading}
+						{#each file.H2blocks as H2block}
 							<td class="w-[200px]">
 								<p class="prose text-sm">
-									{@html marked(highlightText(heading.content, textQuery))}
+									{@html marked(highlightText(H2block.content, textChips))}
 								</p>
 							</td>
 						{/each}
