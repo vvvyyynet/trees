@@ -12,7 +12,7 @@ Tree cadastres not only neglect the growth and evolution of a tree, but also fai
 
 ## References
 
-Mose & Strüver
-Houser, 2014
-Kennedy et al. 2016
-Costanza-Chock, 2018
+- Mose & Strüver
+- Houser, 2014
+- Kennedy et al. 2016
+- Costanza-Chock, 2018

@@ -12,7 +12,7 @@ Urban tree cadastres are usually embedded in the city's GIS, using the generic v
 
 ## References
 
-De Lange, 2020
-Cheshire, 2024
-Conversation with Mirko Winkel, 2022
-Conversation with Jeannine Wintzer, 2022
+- De Lange, 2020
+- Cheshire, 2024
+- Conversation with Mirko Winkel, 2022
+- Conversation with Jeannine Wintzer, 2022

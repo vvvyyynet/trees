@@ -1,11 +1,14 @@
 <script>
 	import { onMount } from 'svelte';
 	import { marked } from 'marked';
+	import { ChevronDown, ChevronUp } from 'lucide-svelte';
+	import { SlideToggle } from '@skeletonlabs/skeleton';
 
 	let markdownFiles = $state([]);
 	let selectedTags = $state([]);
 	let textQuery = $state('');
 	let isVisibleFilters = $state(false);
+	let useSome = $state(false);
 
 	// --------------------------------------------
 	// Tag coloring
@@ -93,9 +96,17 @@
 		if (selectedTags.length === 0) {
 			files = markdownFiles;
 		} else {
-			files = markdownFiles.filter((file) =>
-				selectedTags.every((tag) => file.tagsCat.includes(tag) || file.tagsPrio.includes(tag))
-			);
+			files = markdownFiles.filter((file) => {
+				if (useSome) {
+					return selectedTags.some(
+						(tag) => file.tagsCat.includes(tag) || file.tagsPrio.includes(tag)
+					);
+				} else {
+					return selectedTags.every(
+						(tag) => file.tagsCat.includes(tag) || file.tagsPrio.includes(tag)
+					);
+				}
+			});
 		}
 
 		// Filter by Text
@@ -138,11 +149,22 @@
 		<!-- Tag Filter Menus -->
 		<button
 			type="button"
-			class="md:text-md w-[150px] rounded-full border-2 border-black text-center {isVisibleFilters
-				? 'bg-black text-white'
-				: 'bg-white text-black'} px-3 py-1 text-xs"
-			onclick={toggleFilters}>{isVisibleFilters ? 'hide filters' : 'show filters'}</button
+			class="md:text-md btn w-[150px] rounded-full border-2 border-black bg-white py-1 text-xs text-black"
+			onclick={toggleFilters}
 		>
+			{#if isVisibleFilters}
+				<span>
+					<ChevronUp />
+				</span>
+				<span>Hide Filters</span>
+			{:else}
+				<span>
+					<ChevronDown />
+				</span>
+				<span>Show Filters</span>
+			{/if}
+		</button>
+
 		<!-- Category Tags -->
 		{#if isVisibleFilters}
 			<div>
@@ -151,7 +173,7 @@
 					{#each Array.from(new Set(markdownFiles.flatMap((file) => file.tagsCat))) as tag}
 						<button
 							onclick={() => toggleTag(tag)}
-							class="rounded-full border-2 px-3 py-1 text-xs uppercase"
+							class="btn rounded-full border-2 px-3 py-1 text-xs uppercase"
 							style={`border-color: ${getTagColor(tag)}; background-color: ${
 								selectedTags.includes(tag) ? getTagColor(tag) : 'white'
 							}`}
@@ -159,6 +181,14 @@
 							{tag}
 						</button>
 					{/each}
+					<SlideToggle
+						bind:checked={useSome}
+						class="ml-5 text-sm"
+						size="sm"
+						background="bg-red-400 dark:bg-red-700"
+					>
+						{useSome ? 'some' : 'every'}
+					</SlideToggle>
 				</div>
 			</div>
 
@@ -169,7 +199,7 @@
 					{#each Array.from(new Set(markdownFiles.flatMap((file) => file.tagsPrio))) as tag}
 						<button
 							onclick={() => toggleTag(tag)}
-							class="border-2 px-2 py-1 text-xs"
+							class="btn rounded-none border-2 px-2 py-1 text-xs"
 							style={`border-color: ${getPrioColor(tag)}; background-color: ${
 								selectedTags.includes(tag) ? getPrioColor(tag) : 'white'
 							}`}

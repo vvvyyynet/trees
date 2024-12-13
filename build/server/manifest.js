@@ -10,13 +10,13 @@ return {
 	assets: new Set(["favicon.png","images/Visualisierung_Baumoekosysteme.png","robots.txt"]),
 	mimeTypes: {".png":"image/png",".txt":"text/plain"},
 	_: {
-		client: {"start":"_app/immutable/entry/start.BCG2aA0e.js","app":"_app/immutable/entry/app.CjOEHs-j.js","imports":["_app/immutable/entry/start.BCG2aA0e.js","_app/immutable/chunks/entry.BRDyw4-n.js","_app/immutable/chunks/runtime.DFjr8Tfh.js","_app/immutable/entry/app.CjOEHs-j.js","_app/immutable/chunks/preload-helper.C6YoSxLD.js","_app/immutable/chunks/runtime.DFjr8Tfh.js","_app/immutable/chunks/render.BzNsRBdj.js","_app/immutable/chunks/events.CSDXwEx8.js","_app/immutable/chunks/disclose-version.Ck9J-1aR.js","_app/immutable/chunks/store.jTfjTbva.js"],"stylesheets":[],"fonts":[],"uses_env_dynamic_public":false},
+		client: {"start":"_app/immutable/entry/start.DSmPul4z.js","app":"_app/immutable/entry/app.61kpe4RI.js","imports":["_app/immutable/entry/start.DSmPul4z.js","_app/immutable/chunks/entry.C7MbjuMe.js","_app/immutable/chunks/runtime.DJmhe8UL.js","_app/immutable/chunks/index.DWDzLkAL.js","_app/immutable/chunks/utils.CxNHRzZ3.js","_app/immutable/entry/app.61kpe4RI.js","_app/immutable/chunks/preload-helper.-xZNpBsJ.js","_app/immutable/chunks/runtime.DJmhe8UL.js","_app/immutable/chunks/store.CIcwvlTn.js","_app/immutable/chunks/utils.CxNHRzZ3.js","_app/immutable/chunks/render.DfULjR8S.js","_app/immutable/chunks/disclose-version.DbNCdHmw.js"],"stylesheets":[],"fonts":[],"uses_env_dynamic_public":false},
 		nodes: [
-			__memo(() => import('./chunks/0-Dj3XwwqX.js')),
-			__memo(() => import('./chunks/1-BcemH6Wb.js')),
-			__memo(() => import('./chunks/2-yxG1BngA.js')),
-			__memo(() => import('./chunks/3-BvyQRoRH.js')),
-			__memo(() => import('./chunks/4-DL0jM4Jh.js'))
+			__memo(() => import('./chunks/0-DCW0_aS9.js')),
+			__memo(() => import('./chunks/1-jtFyOeve.js')),
+			__memo(() => import('./chunks/2-uATDCUCt.js')),
+			__memo(() => import('./chunks/3-CCgXaGMS.js')),
+			__memo(() => import('./chunks/4-BPNzVMkH.js'))
 		],
 		routes: [
 			{

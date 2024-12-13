@@ -13,5 +13,5 @@ The challenge is to visualise phenomena that are essentially invisible due to a 
 
 ## References
 
-Harris & Hazen, 2006
-Malavasi, 2020
+- Harris & Hazen, 2006
+- Malavasi, 2020

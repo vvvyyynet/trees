@@ -13,5 +13,5 @@ Grenzen von Schutzbemühungen oder -gebieten sind oft übereinstimmend mit den k
 
 ## References
 
-Aït-Touati et al. 2022
-Kennedy et al. 2016
+- Aït-Touati et al. 2022
+- Kennedy et al. 2016

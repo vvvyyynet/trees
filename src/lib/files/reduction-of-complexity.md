@@ -11,5 +11,5 @@ By reducing complexity through the use of distinctive visual categories, maps te
 
 ## References
 
-Presner et al., 2014
-Costanza-Chock, 2018
+- Presner et al., 2014
+- Costanza-Chock, 2018
