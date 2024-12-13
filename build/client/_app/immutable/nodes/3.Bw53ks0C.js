@@ -1,0 +1,1 @@
+import{a as t,t as r}from"../chunks/disclose-version.M3PKwsxC.js";import"../chunks/legacy.BehYRBVN.js";var p=r('<a href="https://phd.katharinascheller.ch/requirements">https://phd.katharinascheller.ch/requirements</a>');function o(a){var e=p();t(a,e)}export{o as component};
