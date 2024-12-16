@@ -336,7 +336,7 @@
 						<td class="w-[200px]">
 							<!-- Title -->
 							<div class="mb-4 text-lg md:text-xl">
-								{@html marked(highlightText(file.title, updatedChipList))}
+								{@html highlightText(marked(file.title, updatedChipList))}
 							</div>
 							<!-- Tags -->
 							<div class="mt-2 flex flex-col gap-2 pl-4">
@@ -365,7 +365,7 @@
 						{#each file.H2blocks as H2block}
 							<td class="w-[200px]">
 								<p class="prose text-sm">
-									{@html marked(highlightText(H2block.content, updatedChipList))}
+									{@html highlightText(marked(H2block.content, updatedChipList))}
 								</p>
 							</td>
 						{/each}
