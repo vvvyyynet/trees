@@ -76,11 +76,11 @@
 		// as explained above
 		// g-flag means "global", so the regular expression will search through the entire content string, not just stopping after the first match.
 		let matchH2;
-		// matchH2[0] contains the full matched string
-		// matchH2[1] contains the actual text of the heading, as captured by the (.*?) group.
 
 		while ((matchH2 = H2Regex.exec(content)) !== null) {
-			const H2block = matchH2[1];
+			console.log(matchH2);
+			const H2title = matchH2[1]; // the title without ## (as captured by the (.*?) group).
+			console.log(H2title);
 			// get subsequent content
 			const startIndex = matchH2.index + matchH2[0].length;
 			const nextHeadingIndex = content.slice(startIndex).search(/^##\s+/m);
@@ -90,8 +90,13 @@
 						content.slice(startIndex).trim()
 					: // cut in the middle
 						content.slice(startIndex, startIndex + nextHeadingIndex).trim();
-			H2blocks.push({ H2block, content: headingContent });
+			H2blocks.push({ H2title, content: headingContent });
 		}
+
+		// This would be a regex with a non-capturing lookbehind and lookahead the would directly capture the contents... but it does not work.
+		// const H2RegexMATCH = /(?<=^##\s+[^\n]+)([\s\S]*?)(?=(^##\s+|\n$))/gm;
+		// const H2blocksMATCH = content.match(H2RegexMATCH); // Get all H2 headings and their content
+		// console.log(H2blocksMATCH);
 
 		return { tagsCat, tagsPrio, H2blocks, title };
 	}
