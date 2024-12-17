@@ -1,7 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
 	import { marked } from 'marked';
-	import { ChevronDown, ChevronUp } from 'lucide-svelte';
+	import { ChevronDown, ChevronUp, List } from 'lucide-svelte';
 	import { SlideToggle, InputChip } from '@skeletonlabs/skeleton';
 
 	let markdownFiles = $state([]);
@@ -149,7 +149,7 @@
 			// -> ensures that any special characters in the query terms (like . or *) are treated as literal characters.
 			return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 		}
-		if (!terms) return content;
+		if (!terms || terms.length == 0) return content;
 		const flags = isCaseSensitive ? 'g' : 'gi';
 		const queryPattern = terms.map((term) => escapeRegex(term)).join('|');
 		const regex = new RegExp(`(${queryPattern})`, flags);
@@ -341,7 +341,7 @@
 						<td class="w-[200px]">
 							<!-- Title -->
 							<div class="mb-4 text-lg md:text-xl">
-								{@html highlightText(marked(file.title, updatedChipList))}
+								{@html highlightText(marked(file.title), updatedChipList)}
 							</div>
 							<!-- Tags -->
 							<div class="mt-2 flex flex-col gap-2 pl-4">
@@ -370,7 +370,7 @@
 						{#each file.H2blocks as H2block}
 							<td class="w-[200px]">
 								<p class="prose text-sm">
-									{@html highlightText(marked(H2block.content, updatedChipList))}
+									{@html highlightText(marked(H2block.content), updatedChipList)}
 								</p>
 							</td>
 						{/each}
